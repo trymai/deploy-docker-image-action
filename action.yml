@@ -23,14 +23,14 @@ inputs:
     description: "gcp-helm-repository"
     required: true
   helm-charts-path:
-    description: "e.g. ./.k8s/helm"
+    description: "helm-charts-path"
     required: true
     default: "./.k8s/helm"
   service-name:
-    description: "e.g. ${{ env.SERVICE_NAME }}"
+    description: "service-name"
     required: true
   service-version:
-    description: "e.g. ${{ env.SERVICE_VERSION }}"
+    description: "service-version"
     required: true
 runs:
   using: "composite"
