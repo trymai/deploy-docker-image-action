@@ -52,7 +52,7 @@ runs:
       shell: bash
 
     - name: Publish Docker Image
-      run: docker push ${{ inputs.gcp-docker-registry }}/${{ inputs.gcp-project-id }}/{{ inputs.gcp-docker-repository }}/${{ inputs.service-name }}:${{ inputs.service-version }}
+      run: docker push ${{ inputs.gcp-docker-registry }}/${{ inputs.gcp-project-id }}/${{ inputs.gcp-docker-repository }}/${{ inputs.service-name }}:${{ inputs.service-version }}
       shell: bash
 
     - name: Setup Helm
