@@ -1,26 +1,26 @@
-name: "Deploy Trymai Docker Image"
-description: "Deploy Trymai Docker Image"
+name: "Deploy Docker Image"
+description: "Deploy Docker Image"
 inputs:
-  google-credentials:
-    description: "e.g. ${{ secrets.GOOGLE_CREDENTIALS }}"
+  gcp-credentials:
+    description: "gcp-credentials"
     required: true
-  trymai-cluster-name:
-    description: "e.g. trymai-stage"
+  gcp-cluster-name:
+    description: "gcp-cluster-name"
     required: true
-  trymai-project-id:
-    description: "e.g. mimetic-wharf-336310"
+  gcp-project-id:
+    description: "gcp-project-id"
     required: true
-  trymai-cluster-zone:
-    description: "e.g. europe-central2-a"
+  gcp-cluster-zone:
+    description: "europe-central2-a"
     required: true
-  trymai-docker-registry:
-    description: "e.g. europe-central2-docker.pkg.dev"
+  gcp-docker-registry:
+    description: "gcp-docker-registry"
     required: true
-  trymai-docker-repository:
-    description: "e.g. trymai-docker-stage"
+  gcp-docker-repository:
+    description: "gcp-docker-repository"
     required: true
-  trymai-helm-repository:
-    description: "e.g. trymai-helm-stage"
+  gcp-helm-repository:
+    description: "gcp-helm-repository"
     required: true
   helm-charts-path:
     description: "e.g. ./.k8s/helm"
@@ -44,15 +44,15 @@ runs:
       uses: google-github-actions/setup-gcloud@v0
 
     - name: Get the Google Kubernetes Engine Credentials
-      run: gcloud container clusters get-credentials ${{ inputs.trymai-cluster-name }} --zone ${{ inputs.trymai-cluster-zone }}
+      run: gcloud container clusters get-credentials ${{ inputs.gcp-cluster-name }} --zone ${{ inputs.gcp-cluster-zone }}
       shell: bash
 
     - name: Authenticate Docker with Google Artifact Registry.
-      run: cat $GOOGLE_APPLICATION_CREDENTIALS | docker login -u _json_key --password-stdin https://${{ inputs.trymai-docker-registry }}
+      run: cat $GOOGLE_APPLICATION_CREDENTIALS | docker login -u _json_key --password-stdin https://${{ inputs.gcp-docker-registry }}
       shell: bash
 
     - name: Publish Docker Image
-      run: docker push ${{ inputs.trymai-docker-registry }}/${{ inputs.trymai-project-id }}/{{ inputs.trymai-docker-repository }}/${{ inputs.service-name }}:${{ inputs.service-version }}
+      run: docker push ${{ inputs.gcp-docker-registry }}/${{ inputs.gcp-project-id }}/{{ inputs.gcp-docker-repository }}/${{ inputs.service-name }}:${{ inputs.service-version }}
       shell: bash
 
     - name: Setup Helm
@@ -65,9 +65,9 @@ runs:
     - name: Publish Helm Charts
       run: |-
         helm package --version=${{ inputs.service-version }} --app-version=${{ inputs.service-version }} ${{ inputs.helm-charts-path }}
-        helm push ${{ inputs.service-name }}-${{ inputs.service-version }}.tgz oci://${{ inputs.trymai-docker-registry }}/${{ inputs.trymai-project-id }}/${{ inputs.trymai-helm-repository }}
+        helm push ${{ inputs.service-name }}-${{ inputs.service-version }}.tgz oci://${{ inputs.gcp-docker-registry }}/${{ inputs.gcp-project-id }}/${{ inputs.gcp-helm-repository }}
       shell: bash
 
     - name: Deploy image to the GKE cluster
-      run: helm upgrade --install ${{ inputs.service-name }} oci://${{ inputs.trymai-docker-registry }}/${{ inputs.trymai-project-id }}/${{ inputs.trymai-helm-repository }}/${{ inputs.service-version }} --version ${{ inputs.service-version }} --set service.name=${{ inputs.service-version }} --set service.version=${{ inputs.service-version }}
+      run: helm upgrade --install ${{ inputs.service-name }} oci://${{ inputs.gcp-docker-registry }}/${{ inputs.gcp-project-id }}/${{ inputs.gcp-helm-repository }}/${{ inputs.service-version }} --version ${{ inputs.service-version }} --set service.name=${{ inputs.service-version }} --set service.version=${{ inputs.service-version }}
       shell: bash
