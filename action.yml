@@ -69,5 +69,9 @@ runs:
       shell: bash
 
     - name: Deploy image to the GKE cluster
-      run: helm upgrade --install ${{ inputs.service-name }} oci://${{ inputs.gcp-docker-registry }}/${{ inputs.gcp-project-id }}/${{ inputs.gcp-helm-repository }}/${{ inputs.service-name }}:${{ inputs.service-version }} --version ${{ inputs.service-version }} --set service.name=${{ inputs.service-name }} --set service.version=${{ inputs.service-version }}
+      run: helm upgrade --install ${{ inputs.service-name }} oci://${{ inputs.gcp-docker-registry }}/${{ inputs.gcp-project-id }}/${{ inputs.gcp-helm-repository }}/${{ inputs.service-name }} --version ${{ inputs.service-version }} --set service.name=${{ inputs.service-name }} --set service.version=${{ inputs.service-version }}
       shell: bash
+
+#    - name: Deploy image to the GKE cluster
+#      run: helm upgrade --install ${{ inputs.service-name }} oci://${{ inputs.gcp-docker-registry }}/${{ inputs.gcp-project-id }}/${{ inputs.gcp-helm-repository }}/${{ env.SERVICE_NAME }} --version ${{ env.SERVICE_VERSION }} --set service.name=${{ env.SERVICE_NAME }} --set service.version=${{ env.SERVICE_VERSION }}
+#      shell: bash
